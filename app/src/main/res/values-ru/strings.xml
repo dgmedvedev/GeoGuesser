@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <string name="app_name">GeoGuesser</string>
+
+    <!-- Titles -->
+    <string name="sign_in_title">Вход</string>
+    <string name="sign_in_subtitle">Войдите, чтобы продолжить</string>
+
+    <!-- Content descriptions -->
+    <string name="arrow_back_description">Назад</string>
+
+    <!-- Buttons -->
+    <string name="sign_in">Войти</string>
+    <string name="sign_up">Зарегистрироваться</string>
+
+    <!-- Input field labels -->
+    <string name="username_label">Имя пользователя</string>
+    <string name="password_label">Пароль</string>
+
+    <!-- Hints -->
+    <string name="no_account_text">Нет аккаунта?</string>
+    <string name="already_have_account_text">Уже есть аккаунт?</string>
+</resources>

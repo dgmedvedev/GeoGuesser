@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <dimen name="spacing_screen_padding">32dp</dimen>
+
+    <!-- Titles -->
+    <dimen name="spacing_title_to_subtitle">8dp</dimen>
+    <dimen name="spacing_subtitle_to_input">48dp</dimen>
+
+    <!-- Input fields -->
+    <dimen name="spacing_between_inputs">16dp</dimen>
+    <dimen name="spacing_input_to_button">32dp</dimen>
+
+    <!-- Buttons -->
+    <dimen name="button_height_large">56dp</dimen>
+    <dimen name="spacing_button_to_hint">24dp</dimen>
+
+    <!-- Corner radius -->
+    <dimen name="corner_radius_small">12dp</dimen>
+</resources>
