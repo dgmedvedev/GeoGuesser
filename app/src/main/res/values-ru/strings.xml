@@ -6,6 +6,8 @@
     <!-- Titles -->
     <string name="sign_in_title">Вход</string>
     <string name="sign_in_subtitle">Войдите, чтобы продолжить</string>
+    <string name="sign_up_title">Регистрация</string>
+    <string name="sign_up_subtitle">Создайте новый аккаунт</string>
 
     <!-- Content descriptions -->
     <string name="arrow_back_description">Назад</string>

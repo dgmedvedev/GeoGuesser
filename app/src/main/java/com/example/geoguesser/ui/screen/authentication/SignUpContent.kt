@@ -34,9 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.geoguesser.R
 
 @Composable
-fun SignInContent(
-    onSignInClick: () -> Unit,
-    onNavigateToSignUp: () -> Unit,
+fun SignUpContent(
+    onSignUpClick: () -> Unit,
+    onNavigateToSignIn: () -> Unit,
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -56,15 +56,22 @@ fun SignInContent(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Text(
+                text = stringResource(id = R.string.sign_in_title),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(end = dimensionResource(R.dimen.spacing_between_titles))
+                    .clickable(onClick = onNavigateToSignIn)
+            )
             Column(
                 modifier = Modifier
                     .clickable { }
-                    .padding(end = dimensionResource(R.dimen.spacing_between_titles))
                     .width(IntrinsicSize.Max),
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = stringResource(id = R.string.sign_in_title),
+                    text = stringResource(id = R.string.sign_up_title),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -74,17 +81,10 @@ fun SignInContent(
                     thickness = dimensionResource(R.dimen.divider_thickness)
                 )
             }
-            Text(
-                text = stringResource(id = R.string.sign_up_title),
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = onNavigateToSignUp)
-            )
         }
 
         Text(
-            text = stringResource(R.string.sign_in_subtitle),
+            text = stringResource(R.string.sign_up_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacing_subtitle_to_input))
@@ -122,7 +122,7 @@ fun SignInContent(
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_input_to_button)))
 
         Button(
-            onClick = onSignInClick,
+            onClick = onSignUpClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height = dimensionResource(id = R.dimen.button_height_large)),
@@ -130,7 +130,7 @@ fun SignInContent(
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
-                text = stringResource(id = R.string.sign_in),
+                text = stringResource(id = R.string.sign_up),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -143,15 +143,15 @@ fun SignInContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.no_account_text) + " ",
+                text = stringResource(R.string.already_have_account_text) + " ",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.sign_in),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable(onClick = onNavigateToSignUp)
+                modifier = Modifier.clickable(onClick = onNavigateToSignIn)
             )
         }
     }
@@ -159,11 +159,11 @@ fun SignInContent(
 
 @Preview
 @Composable
-fun SignInContentPreview() {
+fun SignUpContentPreview() {
     MaterialTheme {
-        SignInContent(
-            onSignInClick = {},
-            onNavigateToSignUp = {}
+        SignUpContent(
+            onSignUpClick = {},
+            onNavigateToSignIn = {}
         )
     }
 }

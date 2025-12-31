@@ -6,6 +6,8 @@
     <!-- Titles -->
     <string name="sign_in_title">Sign In</string>
     <string name="sign_in_subtitle">Sign in to continue</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_subtitle">Create a new account</string>
 
     <!-- Content descriptions -->
     <string name="arrow_back_description">Back</string>

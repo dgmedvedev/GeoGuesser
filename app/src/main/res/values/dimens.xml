@@ -2,9 +2,11 @@
 <resources>
     <!-- General -->
     <dimen name="spacing_screen_padding">32dp</dimen>
+    <dimen name="divider_thickness">2dp</dimen>
 
     <!-- Titles -->
-    <dimen name="spacing_title_to_subtitle">8dp</dimen>
+    <dimen name="spacing_between_titles">24dp</dimen>
+    <dimen name="spacing_title_to_subtitle">16dp</dimen>
     <dimen name="spacing_subtitle_to_input">48dp</dimen>
 
     <!-- Input fields -->
@@ -17,4 +19,7 @@
 
     <!-- Corner radius -->
     <dimen name="corner_radius_small">12dp</dimen>
+
+    <!-- Spacers -->
+    <dimen name="small_spacer">4dp</dimen>
 </resources>
