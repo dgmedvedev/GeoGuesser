@@ -18,7 +18,9 @@
 
     <!-- Input field labels -->
     <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
     <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm password</string>
 
     <!-- Hints -->
     <string name="no_account_text">Don\'t have an account?</string>

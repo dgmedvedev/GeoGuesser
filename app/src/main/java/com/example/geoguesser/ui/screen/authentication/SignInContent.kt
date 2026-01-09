@@ -17,8 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.geoguesser.R
+import com.example.geoguesser.ui.components.InputField
 
 @Composable
 fun SignInContent(
@@ -90,33 +89,19 @@ fun SignInContent(
             modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacing_subtitle_to_input))
         )
 
-        OutlinedTextField(
+        InputField(
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(R.string.username_label)) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.corner_radius_small)),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-            ),
-            singleLine = true
+            labelResId = R.string.username_label
         )
 
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_between_inputs)))
 
-        OutlinedTextField(
+        InputField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(stringResource(R.string.password_label)) },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.corner_radius_small)),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-            ),
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true
+            labelResId = R.string.password_label,
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_input_to_button)))
