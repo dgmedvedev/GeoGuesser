@@ -48,12 +48,15 @@ fun SignUpContent(
             .background(color = MaterialTheme.colorScheme.background)
             .padding(all = dimensionResource(id = R.dimen.spacing_screen_padding)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = dimensionResource(id = R.dimen.spacing_title_to_subtitle)),
+                .padding(
+                    top = dimensionResource(R.dimen.spacing_top_to_title),
+                    bottom = dimensionResource(id = R.dimen.spacing_title_to_subtitle)
+                ),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -123,7 +126,7 @@ fun SignUpContent(
             visualTransformation = PasswordVisualTransformation()
         )
 
-        Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_input_to_button)))
+        Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = onSignUpClick,

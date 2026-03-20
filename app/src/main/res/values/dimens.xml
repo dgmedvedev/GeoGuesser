@@ -5,6 +5,7 @@
     <dimen name="divider_thickness">2dp</dimen>
 
     <!-- Titles -->
+    <dimen name="spacing_top_to_title">50dp</dimen>
     <dimen name="spacing_between_titles">24dp</dimen>
     <dimen name="spacing_title_to_subtitle">16dp</dimen>
     <dimen name="spacing_subtitle_to_input">48dp</dimen>
