@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -30,16 +27,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.geoguesser.R
+import com.example.geoguesser.domain.model.AppError
+import com.example.geoguesser.ui.components.ErrorText
 import com.example.geoguesser.ui.components.InputField
 
 @Composable
 fun SignInContent(
+    uiState: SignInUiState,
+    onUsernameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
     onSignInClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
 ) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,34 +92,54 @@ fun SignInContent(
         )
 
         InputField(
-            value = username,
-            onValueChange = { username = it },
+            value = uiState.username,
+            onValueChange = onUsernameChange,
             labelResId = R.string.username_label
         )
 
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_between_inputs)))
 
         InputField(
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = onPasswordChange,
             labelResId = R.string.password_label,
             visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
+        uiState.error?.let { error ->
+            val message = when (error) {
+                is AppError.Unauthorized -> "Login failed"
+                is AppError.InvalidResponse -> error.reason
+                is AppError.Server -> "Server error (code ${error.code}): ${error.message}"
+                is AppError.Network -> "Network error: ${error.message}"
+                is AppError.Validation -> error.message
+                is AppError.Unknown -> "Unexpected error: ${error.message}"
+            }
+            ErrorText(
+                text = message,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacing_button_to_hint))
+            )
+        }
+
         Button(
             onClick = onSignInClick,
+            enabled = !uiState.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height = dimensionResource(id = R.dimen.button_height_large)),
             shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.corner_radius_small)),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text(
-                text = stringResource(id = R.string.sign_in),
-                style = MaterialTheme.typography.titleMedium
-            )
+            if (uiState.isLoading) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text(
+                    text = stringResource(id = R.string.sign_in),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_button_to_hint)))
@@ -150,6 +169,9 @@ fun SignInContent(
 fun SignInContentPreview() {
     MaterialTheme {
         SignInContent(
+            uiState = SignInUiState(error = AppError.Validation("Username and password are required")),
+            onUsernameChange = {},
+            onPasswordChange = {},
             onSignInClick = {},
             onNavigateToSignUp = {}
         )

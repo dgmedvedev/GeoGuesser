@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -30,18 +27,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.geoguesser.R
+import com.example.geoguesser.domain.model.AppError
+import com.example.geoguesser.ui.components.ErrorText
 import com.example.geoguesser.ui.components.InputField
 
 @Composable
 fun SignUpContent(
+    uiState: SignUpUiState,
+    onUsernameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
     onSignUpClick: () -> Unit,
     onNavigateToSignIn: () -> Unit,
 ) {
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,24 +94,24 @@ fun SignUpContent(
         )
 
         InputField(
-            value = username,
-            onValueChange = { username = it },
+            value = uiState.username,
+            onValueChange = onUsernameChange,
             labelResId = R.string.username_label
         )
 
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_between_inputs)))
 
         InputField(
-            value = email,
-            onValueChange = { email = it },
+            value = uiState.email,
+            onValueChange = onEmailChange,
             labelResId = R.string.email_label
         )
 
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_between_inputs)))
 
         InputField(
-            value = password,
-            onValueChange = { password = it },
+            value = uiState.password,
+            onValueChange = onPasswordChange,
             labelResId = R.string.password_label,
             visualTransformation = PasswordVisualTransformation()
         )
@@ -120,26 +119,47 @@ fun SignUpContent(
         Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.spacing_between_inputs)))
 
         InputField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
+            value = uiState.confirmPassword,
+            onValueChange = onConfirmPasswordChange,
             labelResId = R.string.confirm_password_label,
             visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.weight(1f))
 
+        uiState.error?.let { error ->
+
+            val message = when (error) {
+                is AppError.Unauthorized -> "Login failed"
+                is AppError.InvalidResponse -> error.reason
+                is AppError.Server -> "Server error (code ${error.code}): ${error.message}"
+                is AppError.Network -> "Network error: ${error.message}"
+                is AppError.Validation -> error.message
+                is AppError.Unknown -> "Unexpected error: ${error.message}"
+            }
+            ErrorText(
+                text = message,
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.spacing_button_to_hint))
+            )
+        }
+
         Button(
             onClick = onSignUpClick,
+            enabled = !uiState.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(height = dimensionResource(id = R.dimen.button_height_large)),
             shape = RoundedCornerShape(size = dimensionResource(id = R.dimen.corner_radius_small)),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text(
-                text = stringResource(id = R.string.sign_up),
-                style = MaterialTheme.typography.titleMedium
-            )
+            if (uiState.isLoading) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
+            } else {
+                Text(
+                    text = stringResource(id = R.string.sign_up),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.spacing_button_to_hint)))
@@ -169,6 +189,11 @@ fun SignUpContent(
 fun SignUpContentPreview() {
     MaterialTheme {
         SignUpContent(
+            uiState = SignUpUiState(error = AppError.Validation("All fields are required")),
+            onUsernameChange = {},
+            onEmailChange = {},
+            onPasswordChange = {},
+            onConfirmPasswordChange = {},
             onSignUpClick = {},
             onNavigateToSignIn = {}
         )
