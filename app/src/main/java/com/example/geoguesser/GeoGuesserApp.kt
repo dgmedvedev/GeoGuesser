@@ -1,14 +1,7 @@
 package com.example.geoguesser
 
 import android.app.Application
-import com.example.geoguesser.core.di.AppContainer
+import dagger.hilt.android.HiltAndroidApp
 
-class GeoGuesserApp : Application() {
-    lateinit var container: AppContainer
-        private set
-
-    override fun onCreate() {
-        super.onCreate()
-        container = AppContainer(applicationContext)
-    }
-}
+@HiltAndroidApp
+class GeoGuesserApp : Application()

@@ -8,7 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.geoguesser.core.extensions.hideSystemBars
 import com.example.geoguesser.ui.navigation.AppNavHost
 import com.example.geoguesser.ui.theme.GeoGuesserTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

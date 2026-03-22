@@ -1,13 +1,14 @@
 package com.example.geoguesser.data.remote.network
 
-import com.example.geoguesser.data.local.auth.AuthTokenStorage
+import com.example.geoguesser.data.local.auth.TokenStorage
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import javax.inject.Inject
 
-class TokenAuthenticator(
-    private val tokenStorage: AuthTokenStorage,
+class TokenAuthenticator @Inject constructor(
+    private val tokenStorage: TokenStorage
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         if (responseCount(response) >= 2) return null

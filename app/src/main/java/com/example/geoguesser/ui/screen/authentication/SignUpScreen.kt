@@ -3,20 +3,14 @@ package com.example.geoguesser.ui.screen.authentication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.geoguesser.GeoGuesserApp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
 fun SignUpScreen(
     onSignUpClick: () -> Unit,
     onNavigateToSignIn: () -> Unit,
+    viewModel: SignUpViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
-    val app = context.applicationContext as GeoGuesserApp
-    val viewModel: SignUpViewModel = viewModel(
-        factory = SignUpViewModelFactory(app.container.authRepository)
-    )
     val uiState by viewModel.uiState.collectAsState()
 
     SignUpContent(

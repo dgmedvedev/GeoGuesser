@@ -1,6 +1,6 @@
 package com.example.geoguesser.data.repository
 
-import com.example.geoguesser.data.local.auth.AuthTokenStorage
+import com.example.geoguesser.data.local.auth.TokenStorage
 import com.example.geoguesser.data.remote.api.AuthApi
 import com.example.geoguesser.data.remote.dto.AuthRequestDto
 import com.example.geoguesser.data.remote.dto.RegistrationRequestDto
@@ -8,10 +8,11 @@ import com.example.geoguesser.domain.model.AppError
 import com.example.geoguesser.domain.model.Outcome
 import com.example.geoguesser.domain.repository.AuthRepository
 import java.io.IOException
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
+class AuthRepositoryImpl @Inject constructor(
     private val authApi: AuthApi,
-    private val tokenStorage: AuthTokenStorage,
+    private val tokenStorage: TokenStorage,
 ) : AuthRepository {
 
     override suspend fun login(username: String, password: String): Outcome<String> {
