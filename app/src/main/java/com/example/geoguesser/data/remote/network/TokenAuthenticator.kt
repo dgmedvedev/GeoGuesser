@@ -1,6 +1,5 @@
 package com.example.geoguesser.data.remote.network
 
-import com.example.geoguesser.data.local.auth.TokenStorage
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -8,21 +7,20 @@ import okhttp3.Route
 import javax.inject.Inject
 
 class TokenAuthenticator @Inject constructor(
-    private val tokenStorage: TokenStorage
+    private val tokenRefresher: TokenRefresher
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         if (responseCount(response) >= 2) return null
+        if (response.request.url.encodedPath.endsWith("/auth/refresh")) return null
 
-        val currentToken = tokenStorage.getAccessToken() ?: return null
-        val requestToken = response.request.header("Authorization")
+        synchronized(this) {
+            val newToken = tokenRefresher.refreshToken()
 
-        return if (requestToken == "Bearer $currentToken") {
-            tokenStorage.clear()
-            null
-        } else {
-            response.request.newBuilder()
-                .header("Authorization", "Bearer $currentToken")
-                .build()
+            return newToken?.let {
+                response.request.newBuilder()
+                    .header("Authorization", "Bearer $newToken")
+                    .build()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.geoguesser.data.remote.dto
 
 data class AuthResponseDto(
-    val token: String,
+    val accessToken: String,
+    val refreshToken: String,
 )

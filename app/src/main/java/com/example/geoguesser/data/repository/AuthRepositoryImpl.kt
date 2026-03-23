@@ -25,12 +25,15 @@ class AuthRepositoryImpl @Inject constructor(
                     else -> Outcome.Failure(AppError.Server(code, response.message()))
                 }
             } else {
-                val token = response.body()?.token
-                if (token.isNullOrBlank()) {
-                    Outcome.Failure(AppError.InvalidResponse("Token is empty"))
+                val tokens = response.body()
+                val accessToken = tokens?.accessToken
+                val refreshToken = tokens?.refreshToken
+                if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
+                    Outcome.Failure(AppError.InvalidResponse("Tokens are empty"))
                 } else {
-                    tokenStorage.setAccessToken(token)
-                    Outcome.Success(token)
+                    tokenStorage.setAccessToken(accessToken)
+                    tokenStorage.setRefreshToken(refreshToken)
+                    Outcome.Success(accessToken)
                 }
             }
         } catch (e: IOException) {
