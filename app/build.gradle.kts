@@ -1,9 +1,52 @@
+import java.util.Properties
+import org.gradle.api.GradleException
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+}
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
+}
+
+fun localProperty(key: String, default: String): String {
+    val result = localProperties.getProperty(key)
+    result?.let { return it }
+    logger.lifecycle("local.properties: $key is null, using '$default'")
+    return default
+}
+
+/** Обязательное свойство из local.properties — иначе сборка падает с понятной ошибкой. */
+fun requireLocalProperty(key: String): String {
+    val raw = localProperties.getProperty(key)?.trim()
+    if (!raw.isNullOrEmpty()) return raw
+    throw GradleException(
+        "Please add \"$key\" в ${rootProject.file("local.properties").path}\n" +
+                "For example: $key=https://api.example.com/demo/"
+    )
+}
+
+fun devBackendUrl(): String {
+    val defaultProfile = "emulator"
+    val defaultUrl = "http://10.0.2.2:8189/demo/"
+    val profile = localProperty("DEV_BACKEND_PROFILE", defaultProfile).lowercase()
+    val byProfile = mapOf(
+        defaultProfile to localProperty("LOCAL_BACKEND_URL_DEV_EMULATOR", defaultUrl),
+        "home" to localProperty("LOCAL_BACKEND_URL_DEV_HOME", defaultUrl),
+        "lan" to localProperty("LOCAL_BACKEND_URL_DEV_LAN", defaultUrl)
+    )
+    val url = byProfile[profile]
+    when {
+        url == null -> logger.lifecycle("Unknown DEV_BACKEND_PROFILE='$profile', using '$defaultProfile'")
+        url.isBlank() -> logger.lifecycle("local.properties: LOCAL_BACKEND_URL_DEV_${profile.uppercase()} is empty, using '$defaultUrl'")
+        else -> return url
+    }
+    return byProfile.getValue(defaultProfile)
 }
 
 android {
@@ -29,6 +72,19 @@ android {
             )
         }
     }
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            val url = devBackendUrl()
+            buildConfigField("String", "BASE_URL", "\"$url\"")
+        }
+        create("prod") {
+            dimension = "environment"
+            val url = requireLocalProperty("LOCAL_BACKEND_URL_PROD")
+            buildConfigField("String", "BASE_URL", "\"$url\"")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -38,6 +94,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

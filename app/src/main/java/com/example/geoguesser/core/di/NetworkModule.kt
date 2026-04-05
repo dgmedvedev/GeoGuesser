@@ -1,5 +1,6 @@
 package com.example.geoguesser.core.di
 
+import com.example.geoguesser.BuildConfig
 import com.example.geoguesser.data.remote.api.AuthApi
 import com.example.geoguesser.data.remote.network.AuthInterceptor
 import com.example.geoguesser.data.remote.network.TokenAuthenticator
@@ -17,8 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-    private const val BASE_URL = "http://10.0.2.2:8189/demo/"
 
     @Provides
     @Singleton
@@ -41,7 +40,7 @@ object NetworkModule {
     @Singleton
     @Named("mainRetrofit")
     fun provideMainRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -61,7 +60,7 @@ object NetworkModule {
     fun provideRefreshRetrofit(
         @Named("refreshOkHttpClient") okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
