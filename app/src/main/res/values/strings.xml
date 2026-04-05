@@ -1,4 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General -->
     <string name="app_name">GeoGuesser</string>
+
+    <!-- Titles -->
+    <string name="sign_in_title">Sign In</string>
+    <string name="sign_in_subtitle">Sign in to continue</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_subtitle">Create a new account</string>
+
+    <!-- Content descriptions -->
     <string name="arrow_back_description">Back</string>
+
+    <!-- Buttons -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+
+    <!-- Input field labels -->
+    <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm password</string>
+
+    <!-- Hints -->
+    <string name="no_account_text">Don\'t have an account?</string>
+    <string name="already_have_account_text">Already have an account?</string>
 </resources>
