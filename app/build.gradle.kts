@@ -21,7 +21,6 @@ fun localProperty(key: String, default: String): String {
     return default
 }
 
-/** Обязательное свойство из local.properties — иначе сборка падает с понятной ошибкой. */
 fun requireLocalProperty(key: String): String {
     val raw = localProperties.getProperty(key)?.trim()
     if (!raw.isNullOrEmpty()) return raw
@@ -46,7 +45,7 @@ fun devBackendUrl(): String {
         url.isBlank() -> logger.lifecycle("local.properties: LOCAL_BACKEND_URL_DEV_${profile.uppercase()} is empty, using '$defaultUrl'")
         else -> return url
     }
-    return byProfile.getValue(defaultProfile)
+    return defaultUrl
 }
 
 android {
