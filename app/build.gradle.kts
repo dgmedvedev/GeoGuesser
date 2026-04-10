@@ -1,5 +1,4 @@
 import java.util.Properties
-import org.gradle.api.GradleException
 
 plugins {
     alias(libs.plugins.android.application)
@@ -21,31 +20,32 @@ fun localProperty(key: String, default: String): String {
     return default
 }
 
-fun requireLocalProperty(key: String): String {
-    val raw = localProperties.getProperty(key)?.trim()
-    if (!raw.isNullOrEmpty()) return raw
-    throw GradleException(
-        "Please add \"$key\" в ${rootProject.file("local.properties").path}\n" +
-                "For example: $key=https://api.example.com/demo/"
-    )
-}
-
 fun devBackendUrl(): String {
     val defaultProfile = "emulator"
     val defaultUrl = "http://10.0.2.2:8189/demo/"
     val profile = localProperty("DEV_BACKEND_PROFILE", defaultProfile).lowercase()
     val byProfile = mapOf(
-        defaultProfile to localProperty("LOCAL_BACKEND_URL_DEV_EMULATOR", defaultUrl),
-        "home" to localProperty("LOCAL_BACKEND_URL_DEV_HOME", defaultUrl),
-        "lan" to localProperty("LOCAL_BACKEND_URL_DEV_LAN", defaultUrl)
+        defaultProfile to localProperty("BACKEND_URL_DEV_EMULATOR", defaultUrl),
+        "home" to localProperty("BACKEND_URL_DEV_HOME", defaultUrl),
+        "lan" to localProperty("BACKEND_URL_DEV_LAN", defaultUrl)
     )
     val url = byProfile[profile]
     when {
-        url == null -> logger.lifecycle("Unknown DEV_BACKEND_PROFILE='$profile', using '$defaultProfile'")
-        url.isBlank() -> logger.lifecycle("local.properties: LOCAL_BACKEND_URL_DEV_${profile.uppercase()} is empty, using '$defaultUrl'")
+        url == null -> logger.lifecycle("local.properties: Unknown DEV_BACKEND_PROFILE='$profile', using '$defaultProfile'")
+        url.isBlank() -> logger.lifecycle("local.properties: 'BACKEND_URL_DEV_${profile.uppercase()}' is empty, using '$defaultUrl'")
         else -> return url
     }
     return defaultUrl
+}
+
+fun prodBackendUrl(): String {
+    val defaultUrl = "http://10.0.2.2:8189/demo/"
+    val key = "BACKEND_URL_PROD"
+    val url = localProperty(key, defaultUrl)
+    return url.ifBlank {
+        logger.lifecycle("local.properties: $key is empty, using '$defaultUrl'")
+        defaultUrl
+    }
 }
 
 android {
@@ -80,7 +80,7 @@ android {
         }
         create("prod") {
             dimension = "environment"
-            val url = requireLocalProperty("LOCAL_BACKEND_URL_PROD")
+            val url = prodBackendUrl()
             buildConfigField("String", "BASE_URL", "\"$url\"")
         }
     }
