@@ -1,9 +1,51 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+}
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) load(file.inputStream())
+}
+
+fun localProperty(key: String, default: String): String {
+    val result = localProperties.getProperty(key)
+    result?.let { return it }
+    logger.lifecycle("local.properties: $key is null, using '$default'")
+    return default
+}
+
+fun devBackendUrl(): String {
+    val defaultProfile = "emulator"
+    val defaultUrl = "http://10.0.2.2:8189/demo/"
+    val profile = localProperty("DEV_BACKEND_PROFILE", defaultProfile).lowercase()
+    val byProfile = mapOf(
+        defaultProfile to localProperty("BACKEND_URL_DEV_EMULATOR", defaultUrl),
+        "home" to localProperty("BACKEND_URL_DEV_HOME", defaultUrl),
+        "public" to localProperty("BACKEND_URL_DEV_PUBLIC", defaultUrl)
+    )
+    val url = byProfile[profile]
+    when {
+        url == null -> logger.lifecycle("local.properties: Unknown DEV_BACKEND_PROFILE='$profile', using '$defaultProfile'")
+        url.isBlank() -> logger.lifecycle("local.properties: 'BACKEND_URL_DEV_${profile.uppercase()}' is empty, using '$defaultUrl'")
+        else -> return url.trim()
+    }
+    return defaultUrl
+}
+
+fun prodBackendUrl(): String {
+    val defaultUrl = "https://api.example.com/demo/"
+    val key = "BACKEND_URL_PROD"
+    val url = providers.gradleProperty(key).orNull ?: defaultUrl
+    return url.ifBlank {
+        logger.lifecycle("gradle.properties: $key is empty, using '$defaultUrl'")
+        defaultUrl
+    }
 }
 
 android {
@@ -29,6 +71,19 @@ android {
             )
         }
     }
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            val url = devBackendUrl()
+            buildConfigField("String", "BASE_URL", "\"$url\"")
+        }
+        create("prod") {
+            dimension = "environment"
+            val url = prodBackendUrl()
+            buildConfigField("String", "BASE_URL", "\"$url\"")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -38,6 +93,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
